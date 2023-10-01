@@ -95,7 +95,7 @@ function DogTinder() {
 
             <div className="col-span-1 bg-gray-200 p-4 relative items-center">
                 <h2 className="text-xl font-semibold">Aceptados</h2>
-                <div className="scrollable-list">
+                <div className=" max-h-[90vh] h-[90vh] overflow-y-scroll">
                     {acceptedDogs.map((dog) => (
                         <div key={dog.id} className="dog-card">
                             <div className=' w-[300px] h-[300px] overflow-clip'>
@@ -106,9 +106,10 @@ function DogTinder() {
                     ))}
                 </div>
             </div>
-            <div className="col-span-1 bg-gray-200 p-4 items-center">
+
+            <div className="col-span-1 bg-gray-200 p-4 items-center ">
                 <h2 className="text-xl font-semibold">Rechazados</h2>
-                <div className="scrollable-list">
+                <div className="h-[90vh] max-h-[90vh] overflow-y-scroll">
                     {rejectedDogs.map((dog) => (
                         <div key={dog.id} className="dog-card">
 
