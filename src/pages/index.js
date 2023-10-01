@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function DogTinder() {
-    const [dogs, setDogs] = useState([]);
+    const [dog, setDog] = useState();
     const [loading, setLoading] = useState(false);
     const [acceptedDogs, setAcceptedDogs] = useState([]);
     const [rejectedDogs, setRejectedDogs] = useState([]);
@@ -13,7 +13,7 @@ function DogTinder() {
         try {
             const response = await fetch('https://dog.ceo/api/breeds/image/random');
             const data = await response.json();
-            setDogs([{ id: Date.now(), imgSrc: data.message, name: generateRandomName() }, ...dogs]);
+            setDog({ id: Date.now(), imgSrc: data.message, name: generateRandomName() });
             setLoading(false);
         } catch (error) {
             console.error('Fallo en obtener el perro :', error);
@@ -32,24 +32,21 @@ function DogTinder() {
     }
 
     function handleAccept() {
-        const [currentDog, ...remainingDogs] = dogs;
-        setAcceptedDogs([currentDog, ...acceptedDogs]);
-        setDogs(remainingDogs);
+        setAcceptedDogs([dog, ...acceptedDogs]);
     }
 
     function handleReject() {
-        const [currentDog, ...remainingDogs] = dogs;
-        setRejectedDogs([currentDog, ...rejectedDogs]);
-        setDogs(remainingDogs);
+        setRejectedDogs([dog, ...rejectedDogs]);
     }
 
     return (
-        <div className="flex space-x-4">
-            <div className="w-1/3 bg-gray-200 p-4">
+
+        <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-1 bg-gray-200 p-4 items-center">
                 <h2 className="text-xl font-semibold">Candidatos</h2>
 
 
-                {loading ? (
+                {loading || !dog ? (
                     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-75">
 
                         <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,28 +57,28 @@ function DogTinder() {
                     </div>
                 ) : (
                     <div className="scrollable-list">
-                        {dogs.map((dog) => (
-                            <div key={dog.id} className="dog-card">
-                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg" />
-                                <p className="text-center mt-2">{dog.name}</p>
-                                <div className="flex justify-center mt-2">
-                                    <button
-                                        onClick={handleAccept}
-                                        disabled={loading}
-                                        className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2"
-                                    >
-                                        Aceptar
-                                    </button>
-                                    <button
-                                        onClick={handleReject}
-                                        disabled={loading}
-                                        className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                                    >
-                                        Rechazar
-                                    </button>
-                                </div>
+                        <div key={dog.id} className="dog-card">
+                            <div className='w-[400px] h-[400px] overflow-clip'>
+                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg h-[100%]" />
                             </div>
-                        ))}
+                            <p className="text-center mt-2">{dog.name}</p>
+                            <div className="flex justify-center mt-2">
+                                <button
+                                    onClick={handleAccept}
+                                    disabled={loading}
+                                    className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2"
+                                >
+                                    Aceptar
+                                </button>
+                                <button
+                                    onClick={handleReject}
+                                    disabled={loading}
+                                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                                >
+                                    Rechazar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
 
@@ -96,29 +93,36 @@ function DogTinder() {
                 {showDescription && <p className="mt-4">Descripción del perro lorem ipsum.</p>}
             </div>
 
-            <div className="w-1/3 bg-gray-200 p-4">
+            <div className="col-span-1 bg-gray-200 p-4 relative items-center">
                 <h2 className="text-xl font-semibold">Aceptados</h2>
                 <div className="scrollable-list">
                     {acceptedDogs.map((dog) => (
                         <div key={dog.id} className="dog-card">
-                            <img src={dog.imgSrc} alt="Dog" className="rounded-lg" />
+                            <div className=' w-[300px] h-[300px] overflow-clip'>
+                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg h-[100%]" />
+                            </div>
                             <p className="text-center mt-2">{dog.name}</p>
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="w-1/3 bg-gray-200 p-4">
+            <div className="col-span-1 bg-gray-200 p-4 items-center">
                 <h2 className="text-xl font-semibold">Rechazados</h2>
                 <div className="scrollable-list">
                     {rejectedDogs.map((dog) => (
                         <div key={dog.id} className="dog-card">
-                            <img src={dog.imgSrc} alt="Dog" className="rounded-lg" />
+
+                            <div className=' w-[300px] h-[300px] overflow-clip'>
+                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg h-[100%]" />
+                            </div>
                             <p className="text-center mt-2">{dog.name}</p>
                         </div>
                     ))}
                 </div>
             </div>
-            {loading && <p className="mt-4">Cargando...</p>}
+
+
+
         </div>
     );
 }
