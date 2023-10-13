@@ -263,7 +263,7 @@ export default DogTinder;
 //             <img
 //               src={dog.imagen} 
 //               alt={dog.name}
-//               style={{ width: '100%', height: 'auto' }}
+//               style={{ width: '100%', height: '200px' }}
 //             />
 //             <CardContent>
 //               <Typography variant="subtitle1">{dog.name}</Typography>
@@ -289,7 +289,7 @@ export default DogTinder;
 //             <img
 //               src={dog.imagen} 
 //               alt={dog.name}
-//               style={{ width: '100%', height: 'auto' }}
+//               style={{ width: '100%', height: '200px' }}
 //             />
 //             <CardContent>
 //               <Typography variant="subtitle1">{dog.name}</Typography>
