@@ -28,7 +28,6 @@ function DogTinder() {
     }, [acceptedDogs, rejectedDogs]);
 
     function generateRandomName() {
-        // Implement a function to generate random names.
     }
 
     function handleAccept() {
