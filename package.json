@@ -9,10 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@codemirror/lang-java": "^6.0.1",
-    "@uiw/codemirror-extensions-classname": "^4.21.17",
-    "@uiw/codemirror-theme-aura": "^4.21.13",
-    "@uiw/react-codemirror": "^4.21.13",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "next": "13.4.19",
