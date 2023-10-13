@@ -128,3 +128,187 @@ function DogTinder() {
 }
 
 export default DogTinder;
+
+// import React from "react"
+// import {
+//   Button,
+//   Divider,
+//   Grid,
+//   LinearProgress,
+//   List,
+//   ListItem,
+//   ListItemText,
+//   Card,
+//   CardContent,
+//   Typography,
+//   CircularProgress,
+// } from "@mui/material";
+// import axios from "axios";
+// import { useEffect, useState } from "react";
+// import { Link } from "react-router-dom";
+// import dogNames from "dog-names";
+// import { LoremIpsum } from "react-lorem-ipsum";
+
+// function TinderDog() {
+//   const [accepted, setAccepted] = useState([]);
+//   const [rejected, setRejected] = useState([]);
+//   const [currentDog, setCurrentDog] = useState({
+//     nombre: "",
+//     imagen: "",
+//     description: "",
+//   });;
+
+  
+//   const [acceptedLoading, setAcceptedLoading] = useState(false);
+//   const [rejectedLoading, setRejectedLoading] = useState(false);
+
+//   useEffect(() => {
+//     fetchDog();
+//   }, []);
+
+//   const fetchDog = async () => {
+//     axios.get("https://dog.ceo/api/breeds/image/random").then((response) => {
+//       setCurrentDog({
+//         name: dogNames.allRandom(),
+//         imagen: response.data.message,
+//         description: (
+//           <LoremIpsum
+//             startWithLoremIpsum={false}
+//             avgWordsPerSentence={3}
+//             avgSentencesPerParagraph={2}
+//           />
+//         ),
+//       });
+//     });
+//   };
+
+//   const acceptDog = async () => {
+//     if (currentDog) {
+//       setAcceptedLoading(true);
+//       await new Promise((resolve) => setTimeout(resolve, 1000));
+//       setAccepted([...accepted, currentDog]);
+//       fetchDog();
+//       setAcceptedLoading(false);
+//     }
+//   };
+
+//   const rejectDog = async () => {
+//     if (currentDog) {
+//       setRejectedLoading(true);
+//       await new Promise((resolve) => setTimeout(resolve, 1000));
+//       setRejected([...rejected, currentDog]);
+//       fetchDog();
+//       setRejectedLoading(false);
+//     }
+//   };
+
+//   const repent = async (dog) => {
+//     if (accepted.includes(dog)) {
+//       setAcceptedLoading(true);
+//       await new Promise((resolve) => setTimeout(resolve, 1000));
+//       setAccepted(accepted.filter((d) => d !== dog));
+//       setRejected([...rejected, dog]);
+//       setAcceptedLoading(false);
+//     } else if (rejected.includes(dog)) {
+//       setRejectedLoading(true);
+//       await new Promise((resolve) => setTimeout(resolve, 1000));
+//       setRejected(rejected.filter((d) => d !== dog));
+//       setAccepted([...accepted, dog]);
+//       setRejectedLoading(false);
+//     }
+//   };
+
+//   return (
+//     <Grid container spacing={2}>
+//       <Grid item md={4}>
+//         <Typography variant="h6" gutterBottom>
+//           Candidatos
+//         </Typography>
+//         {currentDog && (
+//           <Card>
+//             <img
+//               src={currentDog.imagen} 
+//               alt={currentDog.name}
+//               style={{ width: '100%', height: '200px' }}
+//             />
+//             <CardContent>
+//               <Typography variant="subtitle1">{currentDog.name}</Typography>
+//               <Typography variant="body2">{currentDog.description}</Typography>
+//             </CardContent>
+//             <Button
+//               variant="contained"
+//               color="primary"
+//               onClick={acceptDog}
+//               disabled={acceptedLoading}
+//             >
+//               Aceptar
+//             </Button>
+//             <Button
+//               variant="contained"
+//               color="secondary"
+//               onClick={rejectDog}
+//               disabled={rejectedLoading}
+//             >
+//               Rechazar
+//             </Button>
+//           </Card>
+//         )}
+//       </Grid>
+//       <Grid item md={4}>
+//         <Typography variant="h6" gutterBottom>
+//           Aceptados
+//         </Typography>
+//         {accepted.map((dog, index) => (
+//           <Card key={index}>
+//             <img
+//               src={dog.imagen} 
+//               alt={dog.name}
+//               style={{ width: '100%', height: 'auto' }}
+//             />
+//             <CardContent>
+//               <Typography variant="subtitle1">{dog.name}</Typography>
+//               <Typography variant="body2">{dog.description}</Typography>
+//             </CardContent>
+//             <Button
+//               variant="contained"
+//               color="secondary"
+//               onClick={() => repent(dog)}
+//               disabled={acceptedLoading}
+//             >
+//               Arrepentirse
+//             </Button>
+//           </Card>
+//         ))}
+//       </Grid>
+//       <Grid item md={4}>
+//         <Typography variant="h6" gutterBottom>
+//           Rechazados
+//         </Typography>
+//         {rejected.map((dog, index) => (
+//           <Card key={index}>
+//             <img
+//               src={dog.imagen} 
+//               alt={dog.name}
+//               style={{ width: '100%', height: 'auto' }}
+//             />
+//             <CardContent>
+//               <Typography variant="subtitle1">{dog.name}</Typography>
+//               <Typography variant="body2">{dog.description}</Typography>
+//             </CardContent>
+//             <Button
+//               variant="contained"
+//               color="primary"
+//               onClick={() => repent(dog)}
+//               disabled={rejectedLoading}
+//             >
+//               Arrepentirse
+//             </Button>
+//           </Card>
+//         ))}
+//       </Grid>
+//     </Grid>
+//   );
+// }
+
+// export default TinderDog;
+
