@@ -194,25 +194,25 @@ export default DogTinder;
 
 //   const rejectDog = async () => {
 //     if (currentDog) {
+//       const updatedRejected = [...rejected, currentDog];
 //       setRejectedLoading(true);
 //       await new Promise((resolve) => setTimeout(resolve, 1000));
-//       setRejected([...rejected, currentDog]);
+//       setRejected(updatedRejected);
 //       fetchDog();
 //       setRejectedLoading(false);
 //     }
 //   };
-
+  
 //   const repent = async (dog) => {
 //     if (accepted.includes(dog)) {
-//       setAcceptedLoading(true);
-//       await new Promise((resolve) => setTimeout(resolve, 1000));
-//       setAccepted(accepted.filter((d) => d !== dog));
+//       const updatedAccepted = accepted.filter((d) => d !== dog);
+//       setAccepted(updatedAccepted);
 //       setRejected([...rejected, dog]);
 //       setAcceptedLoading(false);
 //     } else if (rejected.includes(dog)) {
 //       setRejectedLoading(true);
-//       await new Promise((resolve) => setTimeout(resolve, 1000));
-//       setRejected(rejected.filter((d) => d !== dog));
+//       const updatedRejected = rejected.filter((d) => d !== dog);
+//       setRejected(updatedRejected);
 //       setAccepted([...accepted, dog]);
 //       setRejectedLoading(false);
 //     }
