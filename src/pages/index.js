@@ -1,129 +1,109 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
+import DogCard from '@/components/DogCard';
+import dogNames from "dog-names";
+import { loremIpsum } from "react-lorem-ipsum";
+import { AiOutlineHeart, AiOutlineFrown } from "react-icons/ai";
+
+const fetchDog = async () => {
+    return fetch('https://dog.ceo/api/breeds/image/random')
+        .then((response) => response.json());
+}
 
 function DogTinder() {
-    const [dog, setDog] = useState();
-    const [loading, setLoading] = useState(false);
+    const [dog, setDog] = useState({ name: "Perro", imgSrc: "https://cdn-icons-png.flaticon.com/512/4253/4253264.png" });
     const [acceptedDogs, setAcceptedDogs] = useState([]);
     const [rejectedDogs, setRejectedDogs] = useState([]);
-    const [showDescription, setShowDescription] = useState(false);
+    const [showDescription, setShowDescription] = useState(-1);
 
-
-    async function fetchDog() {
-        setLoading(true);
-        try {
-            const response = await fetch('https://dog.ceo/api/breeds/image/random');
-            const data = await response.json();
-            setDog({ id: Date.now(), imgSrc: data.message, name: generateRandomName() });
-            setLoading(false);
-        } catch (error) {
-            console.error('Fallo en obtener el perro :', error);
-            setLoading(false);
-        }
-    }
+    const { data, isLoading, isFetching, refetch } = useQuery('dogs', fetchDog, { refetchOnWindowFocus: false });
 
     useEffect(() => {
-        if (!loading) {
-            fetchDog();
+        if (!isFetching && data) {
+            setDog({
+                id: Date.now().toString(), imgSrc: data.message, name: dogNames.allRandom(),
+                description: loremIpsum({ startWithLoremIpsum: false, avgWordsPerSentence: 3, avgSentencesPerParagraph: 5, random: true })
+            })
         }
-    }, [acceptedDogs, rejectedDogs]);
+    }, [isFetching])
 
-    function generateRandomName() {
+
+    const regret = (pDog)=>{
+        if(pDog.type === 0){
+            setAcceptedDogs((prev)=>prev.filter((dog)=> dog.id != pDog.id)) 
+            setRejectedDogs((prev)=> [{...pDog, type : 1}, ...prev])
+        }else{
+            setRejectedDogs((prev)=>prev.filter((dog)=> dog.id != pDog.id))
+            setAcceptedDogs((prev)=> [{...pDog, type : 0}, ...prev])
+
+        }
     }
 
-    function handleAccept() {
-        setAcceptedDogs([dog, ...acceptedDogs]);
+
+    const handleAccept = ()=> {
+        setAcceptedDogs([{...dog, type : 0}, ...acceptedDogs]);
+        if (!isLoading) {
+            refetch();;
+        }
     }
 
-    function handleReject() {
-        setRejectedDogs([dog, ...rejectedDogs]);
+    const handleReject = ()=> {
+        setRejectedDogs([{...dog, type : 1}, ...rejectedDogs]);
+
+        if (!isLoading) {
+            refetch();;
+        }
     }
+
 
     return (
 
-        <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-1 bg-gray-200 p-4 items-center">
-                <h2 className="text-xl font-semibold">Candidatos</h2>
+        <div className="grid lg:grid-cols-3 grid-cols-1 text-black gap-4">
 
+            <div className="col-span-1  p-4 items-center h-min">
 
-                {loading || !dog ? (
-                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-75">
-
-                        <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-                        </svg>
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                ) : (
-                    <div className="scrollable-list">
-                        <div key={dog.id} className="dog-card">
-                            <div className='w-[400px] h-[400px] overflow-clip'>
-                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg h-[100%]" />
-                            </div>
-                            <p className="text-center mt-2">{dog.name}</p>
-                            <div className="flex justify-center mt-2">
-                                <button
-                                    onClick={handleAccept}
-                                    disabled={loading}
-                                    className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2"
-                                >
-                                    Aceptar
-                                </button>
-                                <button
-                                    onClick={handleReject}
-                                    disabled={loading}
-                                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                                >
-                                    Rechazar
-                                </button>
-                            </div>
+                <h2 className="text-xl font-semibold mb-[10px] self-center text-center">Candidato</h2>
+                {dog &&
+                    <DogCard dog={dog} isLoading={isLoading || isFetching} width={"90%"} setShowDescription={setShowDescription} openID={showDescription} >
+                        <div className="flex justify-center pt-4 border-t-blue-500 border-t-[2px]">
+                            <button onClick={handleAccept} disabled={isLoading || isFetching} className="bg-green-500 border-green-500 border-[3px] text-white hover:bg-white hover:text-green-500 px-4 py-2 rounded-full mb-[10px] mr-12" >
+                                <AiOutlineHeart size={40} className=' self-center ' />
+                            </button>
+                            <button onClick={handleReject} disabled={isLoading || isFetching} className="bg-red-500 border-red-500 border-[3px] text-white hover:bg-white hover:text-red-500 px-4 py-2 rounded-full mb-[10px]" >
+                                <AiOutlineFrown size={40} className=' self-center ' />
+                            </button>
                         </div>
-                    </div>
-                )}
+                    </DogCard>
 
 
+                }
 
-                <button
-                    onClick={() => setShowDescription(!showDescription)}
-                    className="mt-4 p-2 bg-blue-500 text-white rounded-lg"
-                >
-                    Mostrar Descripción
-                </button>
-                {showDescription && <p className="mt-4">Descripción del perro lorem ipsum.</p>}
-            </div>
+            </div >
 
-            <div className="col-span-1 bg-gray-200 p-4 relative items-center">
-                <h2 className="text-xl font-semibold">Aceptados</h2>
-                <div className=" max-h-[90vh] h-[90vh] overflow-y-scroll">
-                    {acceptedDogs.map((dog) => (
-                        <div key={dog.id} className="dog-card">
-                            <div className=' w-[300px] h-[300px] overflow-clip'>
-                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg h-[100%]" />
-                            </div>
-                            <p className="text-center mt-2">{dog.name}</p>
-                        </div>
+
+            <div className="col-span-1 p-4 relative items-center h-min">
+                <h2 className="text-xl font-semibold self-center text-center shadow-lg border-dotted border-b-transparent w-[100%] rounded-t-lg p-[10px] text-green-500">
+                    Aceptados</h2>
+                <div className=" max-h-[90vh] h-[90vh] overflow-y-scroll mt-[10px] shadow-lg space-y-7">
+                    {acceptedDogs.map((dog, index) => (
+                        <DogCard key={index} dog={dog} isLoading={false} width={"70%"} setShowDescription={setShowDescription} openID={showDescription} regret={regret}/>
                     ))}
                 </div>
             </div>
 
-            <div className="col-span-1 bg-gray-200 p-4 items-center ">
-                <h2 className="text-xl font-semibold">Rechazados</h2>
-                <div className="h-[90vh] max-h-[90vh] overflow-y-scroll">
-                    {rejectedDogs.map((dog) => (
-                        <div key={dog.id} className="dog-card">
-
-                            <div className=' w-[300px] h-[300px] overflow-clip'>
-                                <img src={dog.imgSrc} alt="Dog" className="rounded-lg h-[100%]" />
-                            </div>
-                            <p className="text-center mt-2">{dog.name}</p>
-                        </div>
+            <div className="col-span-1  p-4 items-center h-min">
+                <h2 className="text-xl font-semibold self-center text-center shadow-lg border-dotted border-b-transparent w-[100%] rounded-t-lg p-[10px]  text-red-500">
+                    Rechazados</h2>
+                <div className="h-[90vh] max-h-[90vh] overflow-y-scroll mt-[10px] shadow-lg space-y-7">
+                    {rejectedDogs.map((dog, index) => (
+                        <DogCard key={index} dog={dog} isLoading={false} width={"70%"} setShowDescription={setShowDescription} openID={showDescription} regret={regret}/>
                     ))}
                 </div>
             </div>
 
 
 
-        </div>
+        </div >
     );
 }
 
