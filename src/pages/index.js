@@ -42,7 +42,7 @@ function DogTinder() {
 
     const handleAccept = ()=> {
         setAcceptedDogs([{...dog, type : 0}, ...acceptedDogs]);
-        if (!isLoading) {
+        if (!isLoading && !isFetching) {
             refetch();;
         }
     }
@@ -50,7 +50,7 @@ function DogTinder() {
     const handleReject = ()=> {
         setRejectedDogs([{...dog, type : 1}, ...rejectedDogs]);
 
-        if (!isLoading) {
+        if (!isLoading && !isFetching) {
             refetch();;
         }
     }
